@@ -36,7 +36,7 @@ def add_car_data(data: UserCarData) -> SavedData:
 
 @router.get('/')
 def get_data_cars(skip: int, limit: int, search_params: str = None) -> list[SavedData]:
-    cars = storage.get_data_cars(skip, limit, search_params)
+    cars = storage.get_data_cars_by_name(skip, limit, search_params)
     result = []
     for car in cars:
         received_data = SavedData(
@@ -45,6 +45,20 @@ def get_data_cars(skip: int, limit: int, search_params: str = None) -> list[Save
                'tags': car['tags'], 'uuid': car['uuid']})
         result.append(received_data)
     return result
+
+
+@router.get('/price')
+def get_data_cars_by_price(skip: int, limit: int, search_price: float) -> list[SavedData]:
+    cars = storage.get_cars_by_price(skip, limit, search_price)
+    result = []
+    for car in cars:
+        received_data = SavedData(
+            **{'name': car['name'], 'gmail': car['gmail'], 'telephone_number': car['telephone_number'], 'model': car['model'],
+               'producer': car['producer'], 'year_created': car['year_created'], 'description': car['description'], 'price': car['price'],
+               'tags': car['tags'], 'uuid': car['uuid']})
+        result.append(received_data)
+    return result
+
 
 
 @router.patch('/update/{car_id}')

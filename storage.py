@@ -41,10 +41,16 @@ class MongoStorage:
         self.advertisement.insert_one(data)
         return data
 
-    def get_data_cars(self, skip: int = 0, limit: int = 10, search_params: str = None):
+    def get_data_cars_by_name(self, skip: int = 0, limit: int = 5, search_params: str = None):
         query = {}
         if search_params:
             query = {'name': {'$regex': search_params.strip()}}
+        return self.advertisement.find(query).skip(skip).limit(limit)
+
+    def get_cars_by_price(self, search_price: float, skip: int = 0, limit: int = 5):
+        query = {}
+        if search_price:
+            query = {'price': {'$eq': search_price}}
         return self.advertisement.find(query).skip(skip).limit(limit)
 
     def update_data_car(self, data_uuid: str, new_price: float):
