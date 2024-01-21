@@ -19,6 +19,7 @@ class UserCarData(BaseModel):
     model: str
     producer: str
     year_created: int = Field(gt=2010)
+    description: str = Field(min_length=30, max_length=250)
     price: float = Field(default=0.0, gt=0.0)
     tags: list[constants.TypeCar] = Field(default=[], max_items=2)
 
@@ -34,20 +35,25 @@ def add_car_data(data: UserCarData) -> SavedData:
 
 
 @router.get('/')
-def get_car_by_country() -> list[dict]:
-    return [{'car': "mercedes"}]
+def get_data_cars(skip: int, limit: int, search_params: str = None) -> list[SavedData]:
+    cars = storage.get_data_cars(skip, limit, search_params)
+    result = []
+    for car in cars:
+        received_data = SavedData(
+            **{'name': car['name'], 'gmail': car['gmail'], 'telephone_number': car['telephone_number'], 'model': car['model'],
+               'producer': car['producer'], 'year_created': car['year_created'], 'description': car['description'], 'price': car['price'],
+               'tags': car['tags'], 'uuid': car['uuid']})
+        result.append(received_data)
+    return result
 
 
-@router.get('/')
-def data_cars() -> list[dict]:
-    return [{'car': "mercedes"}]
-
-
-@router.put('/update/{car_id}')
-def update_data_car():
-    pass
+@router.patch('/update/{car_id}')
+def update_data_car(car_id: str, price: float):
+    storage.update_data_car(car_id, price)
+    return {'result': 'Successful!'}
 
 
 @router.delete('/remove/{car_id}')
-def remove_car():
-    pass
+def remove_car(car_id: str):
+    storage.remove_car_data(car_id)
+    return {'result': 'Deleted'}

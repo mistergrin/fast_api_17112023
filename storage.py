@@ -35,15 +35,28 @@ class MongoStorage:
         self.advertisement = db['User_car_data']
 
     def add_car_data(self, data: dict) -> dict:
+        data['name'] = str(data['name']).title().strip()
+        data['model'] = str(data['model']).title().strip()
         data['uuid'] = str(uuid4())
         self.advertisement.insert_one(data)
         return data
 
-    def update_data_car(self):
-        pass
+    def get_data_cars(self, skip: int = 0, limit: int = 10, search_params: str = None):
+        query = {}
+        if search_params:
+            query = {'name': {'$regex': search_params.strip()}}
+        return self.advertisement.find(query).skip(skip).limit(limit)
 
-    def remove_car_data(self):
-        pass
+    def update_data_car(self, data_uuid: str, new_price: float):
+        filter_data = {'uuid': data_uuid}
+        new_data = {'$set': {'price': new_price}}
+        processed = self.advertisement.update_one(filter_data, new_data)
+        return processed
+
+    def remove_car_data(self, data_uuid: str):
+        filtered_data = {'uuid': data_uuid}
+        deleted_data = self.advertisement.delete_one(filtered_data)
+        return deleted_data
 
 
 storage = MongoStorage()
