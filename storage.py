@@ -10,7 +10,11 @@ class StorageData:
         pass
 
     @abstractmethod
-    def get_car_by_country(self):
+    def get_car_by_name(self):
+        pass
+
+    @abstractmethod
+    def get_car_be_price(self):
         pass
 
     @abstractmethod
