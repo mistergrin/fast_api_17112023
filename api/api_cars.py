@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from pydantic import BaseModel, Field
 import constants
 from storage import storage
@@ -14,6 +14,7 @@ router = APIRouter(
 
 class UserCarData(BaseModel):
     name: str = Field(min_length=2)
+    gmail: str = Field(examples=['patiw20557@wentcity.com'])
     telephone_number: int
     model: str
     producer: str
@@ -23,14 +24,13 @@ class UserCarData(BaseModel):
 
 
 class SavedData(UserCarData):
-    uuid: str
+    uuid: str = Field(examples=['2b49c188-e592-421d-a4b5-a9884854384a'])
 
 
-@router.post('/add')
-def add_car_data(data: UserCarData) -> UserCarData:
-    data.name.upper().strip()
-    storage.add_car_data(data.model_dump())
-    return data
+@router.post('/add', status_code=status.HTTP_201_CREATED)
+def add_car_data(data: UserCarData) -> SavedData:
+    saved_data = storage.add_car_data(data.model_dump())
+    return saved_data
 
 
 @router.get('/')

@@ -34,8 +34,10 @@ class MongoStorage:
         db = client['User_car_data']
         self.advertisement = db['User_car_data']
 
-    def add_car_data(self, data: dict):
+    def add_car_data(self, data: dict) -> dict:
+        data['uuid'] = str(uuid4())
         self.advertisement.insert_one(data)
+        return data
 
     def update_data_car(self):
         pass
