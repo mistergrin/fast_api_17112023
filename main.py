@@ -12,4 +12,4 @@ def root() -> dict:
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('main:app', reload=True, host='127.0.0.1', port=8660)
+    uvicorn.run('main:app', reload=True, host='0.0.0.1', port=8660)
