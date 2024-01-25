@@ -65,4 +65,4 @@ class MongoStorage:
         return deleted_data
 
 
-storage = MongoStorage
+storage = MongoStorage()

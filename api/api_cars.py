@@ -35,7 +35,7 @@ def add_car_data(data: UserCarData) -> SavedData:
 
 
 @router.get('/')
-def get_car_data(skip: int , limit: int = 10, search_params: str = None) -> list[SavedData]:
+def get_car_data(skip: int = 0, limit: int = 10, search_params: str = None) -> list[SavedData]:
     cars = storage.get_car_data(skip, limit, search_params)
     result = []
     for car in cars:
