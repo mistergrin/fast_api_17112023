@@ -10,11 +10,7 @@ class StorageData:
         pass
 
     @abstractmethod
-    def get_car_by_name(self):
-        pass
-
-    @abstractmethod
-    def get_car_be_price(self):
+    def get_car_data(self, skip: int = 0, limit: int = 5, search_params: str = None):
         pass
 
     @abstractmethod
@@ -36,7 +32,7 @@ class MongoStorage:
 
         client = pymongo.MongoClient(url)
         db = client['User_car_data']
-        self.advertisement = db['User_car_data']
+        self.advertisement = db['data_car']
 
     def add_car_data(self, data: dict) -> dict:
         data['name'] = str(data['name']).title().strip()
@@ -45,7 +41,7 @@ class MongoStorage:
         self.advertisement.insert_one(data)
         return data
 
-    def get_data_cars_by_name(self, skip: int = 0, limit: int = 5, search_params: str = None):
+    def get_car_data(self, skip: int = 0, limit: int = 5, search_params: str = None) -> dict:
         query = {}
         if search_params:
             query = {'name': {'$regex': search_params.strip()}}
